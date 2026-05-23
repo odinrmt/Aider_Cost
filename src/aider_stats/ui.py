@@ -80,6 +80,7 @@ def render_summary(console: Console, stats: GlobalStats) -> None:
     summary_table.add_row("Avg Cost / Active Day", f"${avg_per_active_day:.4f}")
     summary_table.add_row("Avg Cost / Week", f"${avg_per_week:.4f}")
 
+    console.print(summary_text)
     console.print()
     console.print(
         Panel(

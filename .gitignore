@@ -1,6 +1,27 @@
-﻿.venv/
-.idea/
+﻿# --- Python & Packaging ---
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+build/
+dist/
+
+# --- Virtual Environments ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- IDEs & System ---
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# --- Aider & Secrets ---
 .aider*
 .env
+
+# --- Project Specific ---
 /CONVENTIONS.md

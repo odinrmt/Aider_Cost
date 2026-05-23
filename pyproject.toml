@@ -2,9 +2,13 @@
 name = "aider-stats"
 version = "0.1.0"
 description = "A CLI tool to analyze Aider chat history costs and tokens."
+authors = [{name = "Your Name"}]
+readme = "README.md"
+license = {text = "MIT"}
 requires-python = ">=3.12"
 dependencies = [
     "rich==15.0.0",
+    "rich-argparse==1.6.0",
 ]
 
 [project.scripts]

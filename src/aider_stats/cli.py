@@ -2,6 +2,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 from rich.console import Console
+from rich_argparse import RichHelpFormatter
 from aider_stats.parser import parse_history_file, scan_for_history_files
 from aider_stats.stats import (
     aggregate_daily_stats,
@@ -14,7 +15,8 @@ from aider_stats.ui import render_summary, render_daily_table, render_project_ta
 def main() -> None:
     """Main entry point for the CLI application."""
     parser = argparse.ArgumentParser(
-        description="Analyze Aider chat history costs and tokens."
+        description="Analyze Aider chat history costs and tokens.",
+        formatter_class=RichHelpFormatter,
     )
     parser.add_argument(
         "--file",

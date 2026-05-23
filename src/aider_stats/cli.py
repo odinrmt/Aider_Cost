@@ -1,5 +1,6 @@
 from __future__ import annotations
 import argparse
+from importlib.metadata import version, PackageNotFoundError
 from pathlib import Path
 from rich.console import Console
 from rich_argparse import RichHelpFormatter
@@ -9,11 +10,17 @@ from aider_stats.stats import (
     calculate_global_stats,
     aggregate_project_stats,
 )
+from aider_stats.models import Session
 from aider_stats.ui import render_summary, render_daily_table, render_project_table
 
 
 def main() -> None:
     """Main entry point for the CLI application."""
+    try:
+        pkg_version = version("aider-stats")
+    except PackageNotFoundError:
+        pkg_version = "0.1.0"
+
     parser = argparse.ArgumentParser(
         description="Analyze Aider chat history costs and tokens.",
         formatter_class=RichHelpFormatter,
@@ -28,6 +35,11 @@ def main() -> None:
         "--scan",
         type=Path,
         help="Path to a parent directory to scan recursively for Aider history files",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {pkg_version}",
     )
     args = parser.parse_args()
 
@@ -46,12 +58,12 @@ def main() -> None:
             return
         files = [args.file]
 
-    all_sessions = []
+    all_sessions: list[Session] = []
     for file in files:
         project_name = file.parent.name
         try:
             sessions = parse_history_file(file, project_name)
-        except Exception as e:
+        except (OSError, UnicodeDecodeError) as e:
             console.print(
                 f"[yellow]Warning: Skipping {file} due to error: {e}[/yellow]"
             )
@@ -66,7 +78,7 @@ def main() -> None:
     daily_stats = aggregate_daily_stats(all_sessions)
     global_stats = calculate_global_stats(daily_stats)
 
-    if global_stats:
+    if global_stats is not None:
         render_project_table(console, project_stats)
         render_summary(console, global_stats)
         render_daily_table(console, daily_stats)

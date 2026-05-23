@@ -8,7 +8,7 @@ class Session:
     """Represents a single Aider chat session.
 
     Attributes:
-        date: The date and time the session started.
+        date: The date the session started.
         project_name: The name of the project.
         tokens_sent: Total tokens sent in the session.
         tokens_received: Total tokens received in the session.

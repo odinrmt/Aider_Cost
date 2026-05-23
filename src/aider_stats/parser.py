@@ -85,9 +85,6 @@ def parse_history_file(file_path: Path, project_name: str = "Unknown") -> list[S
     Returns:
         A list of parsed Session objects.
     """
-    if not file_path.exists():
-        return []
-
     content = file_path.read_text(encoding="utf-8")
     session_blocks = content.split("# aider chat started at ")
 
@@ -108,6 +105,9 @@ def parse_history_file(file_path: Path, project_name: str = "Unknown") -> list[S
 
         session_sent = sum(parse_tokens(m[0], m[1]) for m in matches)
         session_received = sum(parse_tokens(m[2], m[3]) for m in matches)
+        # We sum the tokens for each message because they are individual,
+        # but we only take the value of the last regex match for the global cost
+        # because the session cost reported by Aider is cumulative throughout the session.
         session_cost = float(matches[-1][5])
 
         sessions.append(

@@ -3,27 +3,34 @@ import argparse
 from pathlib import Path
 from rich.console import Console
 from aider_stats.parser import parse_history_file, scan_for_history_files
-from aider_stats.stats import aggregate_daily_stats, calculate_global_stats, aggregate_project_stats
+from aider_stats.stats import (
+    aggregate_daily_stats,
+    calculate_global_stats,
+    aggregate_project_stats,
+)
 from aider_stats.ui import render_summary, render_daily_table, render_project_table
+
 
 def main() -> None:
     """Main entry point for the CLI application."""
-    parser = argparse.ArgumentParser(description="Analyze Aider chat history costs and tokens.")
+    parser = argparse.ArgumentParser(
+        description="Analyze Aider chat history costs and tokens."
+    )
     parser.add_argument(
-        "--file", 
-        type=Path, 
+        "--file",
+        type=Path,
         default=Path.cwd() / ".aider.chat.history.md",
-        help="Path to the .aider.chat.history.md file (defaults to current directory)"
+        help="Path to the .aider.chat.history.md file (defaults to current directory)",
     )
     parser.add_argument(
         "--scan",
         type=Path,
-        help="Path to a parent directory to scan recursively for Aider history files"
+        help="Path to a parent directory to scan recursively for Aider history files",
     )
     args = parser.parse_args()
-    
+
     console = Console()
-    
+
     if args.scan:
         files = scan_for_history_files(args.scan)
     else:
@@ -41,15 +48,16 @@ def main() -> None:
     if not all_sessions:
         console.print("[yellow]No cost or token data found.[/yellow]")
         return
-        
+
     project_stats = aggregate_project_stats(all_sessions)
     daily_stats = aggregate_daily_stats(all_sessions)
     global_stats = calculate_global_stats(daily_stats)
-    
+
     if global_stats:
         render_project_table(console, project_stats)
         render_summary(console, global_stats)
         render_daily_table(console, daily_stats)
+
 
 if __name__ == "__main__":
     main()

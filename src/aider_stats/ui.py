@@ -7,9 +7,12 @@ from rich import box
 from rich.text import Text
 from aider_stats.models import DailyStats, GlobalStats, ProjectStats
 
-def render_project_table(console: Console, project_stats: dict[str, ProjectStats]) -> None:
+
+def render_project_table(
+    console: Console, project_stats: dict[str, ProjectStats]
+) -> None:
     """Renders the project statistics table.
-    
+
     Args:
         console: The rich Console instance.
         project_stats: A dictionary mapping project names to ProjectStats objects.
@@ -21,7 +24,9 @@ def render_project_table(console: Console, project_stats: dict[str, ProjectStats
     table.add_column("Tokens Received", justify="right", style="blue")
     table.add_column("Total Cost", justify="right", style="red bold")
 
-    sorted_projects = sorted(project_stats.items(), key=lambda item: item[1].cost, reverse=True)
+    sorted_projects = sorted(
+        project_stats.items(), key=lambda item: item[1].cost, reverse=True
+    )
 
     for project_name, stats in sorted_projects:
         table.add_row(
@@ -29,35 +34,46 @@ def render_project_table(console: Console, project_stats: dict[str, ProjectStats
             str(stats.sessions_count),
             f"{stats.tokens_sent:,}".replace(",", " "),
             f"{stats.tokens_received:,}".replace(",", " "),
-            f"${stats.cost:.4f}"
+            f"${stats.cost:.4f}",
         )
 
     console.print(table)
     console.print()
 
+
 def render_summary(console: Console, stats: GlobalStats) -> None:
     """Renders the global summary panel.
-    
+
     Args:
         console: The rich Console instance.
         stats: The GlobalStats object to display.
     """
-    avg_per_session = stats.total_cost / stats.total_sessions if stats.total_sessions > 0 else 0
-    avg_per_active_day = stats.total_cost / stats.active_days if stats.active_days > 0 else 0
+    avg_per_session = (
+        stats.total_cost / stats.total_sessions if stats.total_sessions > 0 else 0
+    )
+    avg_per_active_day = (
+        stats.total_cost / stats.active_days if stats.active_days > 0 else 0
+    )
     weeks_span = max(1.0, stats.days_span / 7.0)
     avg_per_week = stats.total_cost / weeks_span
 
     summary_text = Text()
     summary_text.append("Analyzed period: ", style="bold")
-    summary_text.append(f"{stats.min_date.strftime('%d/%m/%Y')} to {stats.max_date.strftime('%d/%m/%Y')} ({stats.days_span} days)\n\n")
-    
+    summary_text.append(
+        f"{stats.min_date.strftime('%d/%m/%Y')} to {stats.max_date.strftime('%d/%m/%Y')} ({stats.days_span} days)\n\n"
+    )
+
     summary_table = Table(box=box.SIMPLE, show_header=False)
     summary_table.add_column("Metric", style="cyan bold")
     summary_table.add_column("Value", style="green bold", justify="right")
-    
+
     summary_table.add_row("Total Sessions", str(stats.total_sessions))
-    summary_table.add_row("Total Tokens Sent", f"{stats.total_sent:,}".replace(",", " "))
-    summary_table.add_row("Total Tokens Received", f"{stats.total_received:,}".replace(",", " "))
+    summary_table.add_row(
+        "Total Tokens Sent", f"{stats.total_sent:,}".replace(",", " ")
+    )
+    summary_table.add_row(
+        "Total Tokens Received", f"{stats.total_received:,}".replace(",", " ")
+    )
     summary_table.add_row("Total Cost", f"${stats.total_cost:.4f}")
     summary_table.add_row("---", "---")
     summary_table.add_row("Avg Cost / Session", f"${avg_per_session:.4f}")
@@ -65,12 +81,21 @@ def render_summary(console: Console, stats: GlobalStats) -> None:
     summary_table.add_row("Avg Cost / Week", f"${avg_per_week:.4f}")
 
     console.print()
-    console.print(Panel(summary_table, title="[bold blue]📊 Aider Global Summary[/bold blue]", expand=False))
+    console.print(
+        Panel(
+            summary_table,
+            title="[bold blue]📊 Aider Global Summary[/bold blue]",
+            expand=False,
+        )
+    )
     console.print()
 
-def render_daily_table(console: Console, daily_stats: dict[datetime, DailyStats]) -> None:
+
+def render_daily_table(
+    console: Console, daily_stats: dict[datetime, DailyStats]
+) -> None:
     """Renders the detailed daily statistics table.
-    
+
     Args:
         console: The rich Console instance.
         daily_stats: A dictionary mapping dates to DailyStats objects.
@@ -89,7 +114,7 @@ def render_daily_table(console: Console, daily_stats: dict[datetime, DailyStats]
             str(stats.sessions_count),
             f"{stats.tokens_sent:,}".replace(",", " "),
             f"{stats.tokens_received:,}".replace(",", " "),
-            f"${stats.cost:.4f}"
+            f"${stats.cost:.4f}",
         )
 
     console.print(daily_table)

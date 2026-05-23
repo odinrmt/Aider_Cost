@@ -1,7 +1,27 @@
 from __future__ import annotations
 from collections import defaultdict
 from datetime import datetime
-from aider_stats.models import Session, DailyStats, GlobalStats
+from aider_stats.models import Session, DailyStats, GlobalStats, ProjectStats
+
+def aggregate_project_stats(sessions: list[Session]) -> dict[str, ProjectStats]:
+    """Aggregates individual sessions into project statistics.
+    
+    Args:
+        sessions: A list of Session objects.
+        
+    Returns:
+        A dictionary mapping project names to ProjectStats objects.
+    """
+    project_stats: dict[str, ProjectStats] = defaultdict(ProjectStats)
+    
+    for session in sessions:
+        stats = project_stats[session.project_name]
+        stats.sessions_count += 1
+        stats.tokens_sent += session.tokens_sent
+        stats.tokens_received += session.tokens_received
+        stats.cost += session.cost
+        
+    return dict(project_stats)
 
 def aggregate_daily_stats(sessions: list[Session]) -> dict[datetime, DailyStats]:
     """Aggregates individual sessions into daily statistics.

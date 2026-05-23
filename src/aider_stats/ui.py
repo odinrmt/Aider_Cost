@@ -5,7 +5,35 @@ from rich.table import Table
 from rich.panel import Panel
 from rich import box
 from rich.text import Text
-from aider_stats.models import DailyStats, GlobalStats
+from aider_stats.models import DailyStats, GlobalStats, ProjectStats
+
+def render_project_table(console: Console, project_stats: dict[str, ProjectStats]) -> None:
+    """Renders the project statistics table.
+    
+    Args:
+        console: The rich Console instance.
+        project_stats: A dictionary mapping project names to ProjectStats objects.
+    """
+    table = Table(title="Cost per Project", box=box.ROUNDED)
+    table.add_column("Project", justify="left", style="cyan")
+    table.add_column("Sessions", justify="center", style="magenta")
+    table.add_column("Tokens Sent", justify="right", style="blue")
+    table.add_column("Tokens Received", justify="right", style="blue")
+    table.add_column("Total Cost", justify="right", style="red bold")
+
+    sorted_projects = sorted(project_stats.items(), key=lambda item: item[1].cost, reverse=True)
+
+    for project_name, stats in sorted_projects:
+        table.add_row(
+            project_name,
+            str(stats.sessions_count),
+            f"{stats.tokens_sent:,}".replace(",", " "),
+            f"{stats.tokens_received:,}".replace(",", " "),
+            f"${stats.cost:.4f}"
+        )
+
+    console.print(table)
+    console.print()
 
 def render_summary(console: Console, stats: GlobalStats) -> None:
     """Renders the global summary panel.

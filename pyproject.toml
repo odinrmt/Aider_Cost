@@ -17,3 +17,15 @@ aider-stats = "aider_stats.cli:main"
 
 [tool.uv]
 package = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "C4", "UP", "ARG", "PTH", "RUF"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true

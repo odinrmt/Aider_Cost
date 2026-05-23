@@ -32,6 +32,11 @@ def main() -> None:
     console = Console()
 
     if args.scan:
+        if not args.scan.is_dir():
+            console.print(
+                f"[bold red]Error:[/bold red] Directory {args.scan} not found or is not a valid directory."
+            )
+            return
         files = scan_for_history_files(args.scan)
     else:
         if not args.file.exists():
@@ -42,7 +47,13 @@ def main() -> None:
     all_sessions = []
     for file in files:
         project_name = file.parent.name
-        sessions = parse_history_file(file, project_name)
+        try:
+            sessions = parse_history_file(file, project_name)
+        except Exception as e:
+            console.print(
+                f"[yellow]Warning: Skipping {file} due to error: {e}[/yellow]"
+            )
+            continue
         all_sessions.extend(sessions)
 
     if not all_sessions:

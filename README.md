@@ -41,7 +41,7 @@ aider-stats --scan /path/to/projects/folder
 
 ## Demo
 
-<!-- INSERT_DEMO_HERE -->
+![Aider Stats Demo](demo.png)
 
 ## License
 

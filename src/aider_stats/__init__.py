@@ -1,0 +1,1 @@
+"""Aider stats analysis package."""

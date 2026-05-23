@@ -8,14 +8,31 @@ class Session:
     
     Attributes:
         date: The date and time the session started.
+        project_name: The name of the project.
         tokens_sent: Total tokens sent in the session.
         tokens_received: Total tokens received in the session.
         cost: Total cost of the session in USD.
     """
     date: datetime
+    project_name: str
     tokens_sent: int
     tokens_received: int
     cost: float
+
+@dataclass
+class ProjectStats:
+    """Aggregated statistics for a single project.
+    
+    Attributes:
+        sessions_count: Number of sessions in the project.
+        tokens_sent: Total tokens sent.
+        tokens_received: Total tokens received.
+        cost: Total cost in USD.
+    """
+    sessions_count: int = 0
+    tokens_sent: int = 0
+    tokens_received: int = 0
+    cost: float = 0.0
 
 @dataclass
 class DailyStats:

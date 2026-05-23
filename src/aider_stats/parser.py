@@ -1,4 +1,5 @@
 from __future__ import annotations
+import os
 import re
 from pathlib import Path
 from datetime import datetime
@@ -39,12 +40,36 @@ def extract_date(block: str) -> datetime | None:
     except ValueError:
         return None
 
-def parse_history_file(file_path: Path) -> list[Session]:
+def scan_for_history_files(base_dir: Path) -> list[Path]:
+    """Scans a directory recursively for .aider.chat.history.md files.
+
+    Args:
+        base_dir: The root directory to start scanning from.
+
+    Returns:
+        A list of paths to history files found.
+    """
+    history_files = []
+    ignore_dirs = {
+        ".venv", "venv", "env", "node_modules", ".git",
+        ".idea", "__pycache__", ".next", "dist", "build"
+    }
+
+    for root, dirs, files in os.walk(base_dir):
+        dirs[:] = [d for d in dirs if d not in ignore_dirs]
+
+        if ".aider.chat.history.md" in files:
+            history_files.append(Path(root) / ".aider.chat.history.md")
+
+    return history_files
+
+def parse_history_file(file_path: Path, project_name: str = "Unknown") -> list[Session]:
     """Reads and parses the Aider history file into Session objects.
-    
+
     Args:
         file_path: The path to the .aider.chat.history.md file.
-        
+        project_name: The name of the project.
+
     Returns:
         A list of parsed Session objects.
     """
@@ -75,6 +100,7 @@ def parse_history_file(file_path: Path) -> list[Session]:
         
         sessions.append(Session(
             date=session_date,
+            project_name=project_name,
             tokens_sent=session_sent,
             tokens_received=session_received,
             cost=session_cost

@@ -17,6 +17,7 @@ def render_project_table(
         console: The rich Console instance.
         project_stats: A dictionary mapping project names to ProjectStats objects.
     """
+    console.print()
     table = Table(title="Cost per Project", box=box.ROUNDED)
     table.add_column("Project", justify="left", style="cyan")
     table.add_column("Sessions", justify="center", style="magenta")

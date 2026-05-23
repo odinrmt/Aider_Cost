@@ -19,10 +19,10 @@ def parse_tokens(value_str: str, unit_str: str) -> int:
     val = float(value_str)
     unit = unit_str.upper()
     if unit == "K":
-        return int(val * 1000)
+        return int(round(val * 1000))
     if unit == "M":
-        return int(val * 1000000)
-    return int(val)
+        return int(round(val * 1000000))
+    return int(round(val))
 
 
 def extract_date(block: str) -> datetime | None:
